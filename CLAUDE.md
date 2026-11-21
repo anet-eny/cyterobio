@@ -71,7 +71,10 @@ public/images/      all images and logos
 ## Typography
 
 - Text styles from Figma become named class strings in `src/lib/typography.ts` (e.g. `sectionTitle`, `sectionBody`, `eyebrowLabel`). Components import them instead of repeating long class lists.
-- Font loaded with `next/font/google` in `layout.tsx`, exposed as `--font-sans`.
+- Two fonts, loaded with `next/font/google` in `layout.tsx`:
+  - Outfit → `--font-sans` (default body font, all non-"Alt" styles)
+  - IBM Plex Serif → `--font-serif` (all "Alt" text styles: Heading 1 Alt, Heading 2 Alt, Heading 3 Alt)
+- Full style list: `docs/figma/style-guide.md`.
 
 ## Images
 
@@ -85,13 +88,13 @@ public/images/      all images and logos
 
 ## SVG dashed lines (dividers and workflow connector)
 
-The design has three dashed SVG lines. Colors come from tokens (Figma styles "CB Primary 700" and "CB Primary 100"), never hex in JSX.
+The design has three dashed SVG lines. Colors come from tokens (Figma styles "CB Primary 700" and "CB Secondary 100"), never hex in JSX.
 
-| Line      | Where                                      | Stroke                            | Notes                                                                              |
-| --------- | ------------------------------------------ | --------------------------------- | ---------------------------------------------------------------------------------- |
-| Divider   | between "Our services" and "Our portfolio" | primary-700 (#3B486D), 7px dashed | full-bleed wave, about 1612x132 px in Figma (wider than the 1440 frame on purpose) |
-| Divider 2 | between CTA and Footer                     | primary-700 (#3B486D), 7px dashed | same wave, mirrored horizontally (`scale-x-[-1]`)                                  |
-| Connector | between Workflow Cards in "How we work"    | primary-100 (#D2CAEA), 7px dashed | about 611x1153 px in Figma; desktop only                                           |
+| Line      | Where                                      | Stroke                              | Notes                                                                              |
+| --------- | ------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------------- |
+| Divider   | between "Our services" and "Our portfolio" | primary-700 (#3B486D), 7px dashed   | full-bleed wave, about 1612x132 px in Figma (wider than the 1440 frame on purpose) |
+| Divider 2 | between CTA and Footer                     | primary-700 (#3B486D), 7px dashed   | same wave, mirrored horizontally (`scale-x-[-1]`)                                  |
+| Connector | between Workflow Cards in "How we work"    | secondary-100 (#D2CAEA), 7px dashed | about 611x1153 px in Figma; desktop only                                           |
 
 **Figma caveat:** Figma's CSS shows these as boxes with a dashed `border`. That is only the bounding box of the vector. Take the real path from the exported SVG (`_assets/svg/`, or via Figma MCP), not from the CSS border. If the SVG files are missing, ask me for them. Stroke width and dash pattern come from Figma, check them visually.
 
