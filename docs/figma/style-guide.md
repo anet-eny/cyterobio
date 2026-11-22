@@ -22,10 +22,30 @@ Source: Figma file `XLGAVtqgKObNCMSEj3M4rp`, node `184:211` (Style Guide). Read 
 | CB Neutral 500   | #6B7388 | oklch(0.556 0.034 268.8) | `--color-neutral-500`   |
 | CB Neutral 800   | #1F2638 | oklch(0.271 0.035 267.7) | `--color-neutral-800`   |
 | CB Neutral 900   | #0F1420 | oklch(0.192 0.026 266.6) | `--color-neutral-900`   |
-| Gradient 1       | –       | –                        | values missing (MCP returned empty); fill in when the section using it is built |
-| Gradient 2       | –       | –                        | same as Gradient 1      |
 
 Secondary has only 100, 500 and 700 (no 300).
+
+## Gradients
+
+Values supplied by the designer (MCP did not return them).
+
+| Figma style | Figma CSS                                                  | Direction                          | Stops (0 % → 100 %)                         |
+| ----------- | ---------------------------------------------------------- | ---------------------------------- | ------------------------------------------- |
+| Gradient 1  | `linear-gradient(360deg, #0F1420 0%, #3B486D 100%)`        | bottom → top (dark at the bottom)  | `neutral-900` (#0F1420) → `primary-700` (#3B486D) |
+| Gradient 2  | `linear-gradient(180deg, #0F1420 0%, #3B486D 100%)`        | top → bottom (dark at the top)     | `neutral-900` (#0F1420) → `primary-700` (#3B486D) |
+
+Both stops are existing tokens: #0F1420 = CB Neutral 900 = `oklch(0.192 0.026 266.6)`, #3B486D = CB Primary 700 = `oklch(0.407 0.065 268.7)`. The two gradients are the same colors, only mirrored vertically.
+
+Tailwind v4: define them in `@theme` under the `--background-image-*` namespace (Tailwind 4.2 resolves `bg-*` against it), referencing the color tokens instead of repeating values:
+
+```css
+@theme {
+  --background-image-gradient-1: linear-gradient(to top, var(--color-neutral-900), var(--color-primary-700));
+  --background-image-gradient-2: linear-gradient(to bottom, var(--color-neutral-900), var(--color-primary-700));
+}
+```
+
+Usage: `bg-gradient-1`, `bg-gradient-2`. (`360deg` = `to top`, `180deg` = `to bottom`.)
 
 ## Text styles
 
@@ -62,4 +82,4 @@ No spacing styles in the Style Guide. Take spacing from the section designs and 
 2. CLAUDE.md listed the connector as "primary-100 (#D2CAEA)". #D2CAEA is now Secondary 100, so the connector uses `secondary-100` (matches the exported `connecting vector.svg`). CLAUDE.md fixed. (Resolved)
 3. Both logo SVGs hard-code `fill: rgb(77,93,139)` = #4D5D8B = Primary 500. They will be converted to `currentColor` so the color comes from tokens. (Decided, not yet implemented)
 4. The exported line SVGs (`_assets/svg/`) have the dashes baked in as separate subpaths. Measured values: 7 px stroke, ~13 px dash / ~13 px gap, round caps. The paths will be rebuilt as one continuous path + `stroke-dasharray`. (Decided, not yet implemented)
-5. Gradient 1 / Gradient 2 values were not returned by MCP. (Open)
+5. Gradient 1 / Gradient 2 values were not returned by MCP; the designer supplied them (see Gradients). (Resolved)
