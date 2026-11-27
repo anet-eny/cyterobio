@@ -1,10 +1,11 @@
 # CyteroBio – Desktop layout (Figma)
 
-Source: Figma file `XLGAVtqgKObNCMSEj3M4rp`, frame `149:201` "Desktop" (1440 × 6304). Read on 2026-11-22 via Figma MCP: `get_metadata` (structure, positions, sizes) + one `get_screenshot` of the whole frame (549 × 2400 px, overview only). Do not re-read Figma for this.
+Source: Figma file `XLGAVtqgKObNCMSEj3M4rp`, frame `149:201` "Desktop" (1440 × 6304). Read on 2026-11-22 via Figma MCP: `get_metadata` (structure, positions, sizes) + one `get_screenshot` of the whole frame (549 × 2400 px, overview only). Open questions answered by the designer on 2026-11-27. Do not re-read Figma for this.
 
 **Source of every value:**
 - **[M]** = from `get_metadata` (exact Figma coordinates, px)
 - **[S]** = estimated from the low-res screenshot (colors, content, look; not exact)
+- **[D]** = decided / supplied by the designer (authoritative)
 
 All coordinates of a section's children are relative to that section frame unless noted otherwise.
 
@@ -27,21 +28,28 @@ Suggested component names: `navbar.tsx`, `hero.tsx`, `services.tsx`, `portfolio.
 
 Section headings sit at y 42 [M] inside the section (Services: y 54 [M]), heading box height 45 [M] → consistent with Heading 2 (36 px), uppercase [S], centered [S].
 
-## Backgrounds [S]
+## Backgrounds [D]
 
-No section has its own background fill in the metadata, except Hero, which has a full-size `base` rounded-rectangle (1440 × 866) [M]. On the screenshot the page reads as **one continuous dark navy background** in the `neutral-900` → `primary-700` range, with lighter and darker zones [S]:
+| Section | Background | Tailwind class |
+| ------- | ---------- | -------------- |
+| Nav | primary-700 | `bg-primary-700` |
+| Hero | Gradient 1 | `bg-gradient-1` |
+| Our services | neutral-900 | `bg-neutral-900` |
+| Our portfolio | Gradient 2 | `bg-gradient-2` |
+| About us | Gradient 1 | `bg-gradient-1` |
+| How we work | Gradient 2 | `bg-gradient-2` |
+| CTA | Gradient 1 | `bg-gradient-1` |
+| Footer | neutral-900 | `bg-neutral-900` |
 
-| Area | Look [S] | Likely token (to confirm) |
-| ---- | -------- | ------------------------- |
-| Nav + Hero | lighter at the top, fading to dark at the bottom | Gradient 1 (`bg-gradient-1`, primary-700 top → neutral-900 bottom) on `base` |
-| Our services | dark | neutral-900 |
-| Our portfolio → About us | gradually lighter again around the portfolio card, dark again below the molecule | gradient / soft glow, unclear |
-| How we work | dark at the top, slightly lighter towards the bottom | Gradient 2-like? unclear |
-| CTA + Footer | medium navy | unclear |
+Gradient definitions: see `style-guide.md` (Gradient 1 = primary-700 top → neutral-900 bottom, Gradient 2 = neutral-900 top → primary-700 bottom).
+In Figma the Hero background is the `base` rounded-rectangle 1440 × 866 [M]; other sections have no fill layer in the metadata [M].
 
-→ Exact backgrounds can't be read from the screenshot. Confirm per section (designer, or `get_design_context` on a single section, only with approval).
+## Glows (Ellipse 1) [D]
 
-Glows: `Ellipse 1` in Hero (x 720, y 198, 346 × 344) [M] and `Ellipse 1` in About us (x 526, y 316, 442 × 412) [M] are light blurred spots behind the molecules [S]. Their color/blur is unknown.
+- Hero: x 720, y 198, 346 × 344 [M]. About us: x 526, y 316, 442 × 412 [M]. Both behind the molecule images [S].
+- Fill `primary-500`, Figma **layer blur 190** [D].
+- CSS: Figma's blur value is roughly 2× the CSS `blur()` radius → start with `blur(95px)` and **verify visually against the screenshot**, adjust if needed.
+- Decorative: `aria-hidden="true"`, `pointer-events-none`. Use a smaller blur (and/or smaller ellipse) on mobile for performance.
 
 ## Content width (container)
 
@@ -53,45 +61,59 @@ Glows: `Ellipse 1` in Hero (x 720, y 198, 346 × 344) [M] and `Ellipse 1` in Abo
 | Nav logo | 54 | 265 | [M] |
 | Workflow cards (outer edges) | 198 – 1233 | 1035 | [M] |
 
-→ **Content width ≈ 1240 px** (100 px side margin on the 1440 frame). Proposal: `container` with max-width 1240 px content + fluid side padding. The nav logo (x 54) and footer (x 83) sit further out; treated as Figma inaccuracy, align them to the container (to confirm).
+→ **Content width ≈ 1240 px** (100 px side margin on the 1440 frame). `container` = max-width 1240 px content + fluid side padding.
+→ **Nav and footer are NOT put into the container** [D]: keep the Figma alignment (nav logo x 54, footer row x 83 on 1440).
 
 ## Sections in detail
 
 ### 1. Nav (149:279)
-- `Logo` instance (mark + wordmark): x 54, y 40, 265 × 78 [M]. Color `primary-100` (decided).
+- Background `primary-700` [D].
+- `Logo` instance (mark + wordmark): x 54, y 40, 265 × 78 [M]. Color `primary-100` [D]. Alignment x 54 kept [D].
 - No menu links, no button [M].
 
 ### 2. Hero (149:223)
-- `base` rounded-rectangle 1440 × 866 [M] → background.
+- Background Gradient 1 [D] (`base` rounded-rectangle 1440 × 866 [M]).
 - `hero text` frame: x 190, y 43, 753 × 309 [M]. Has a **dashed rounded border** around the text [S] (box only, no SVG).
   - Headline "Let us design your next molecule." x 32, y 32 (in Group 1), 689 × 188 [M]; serif [S] → **Heading 1 Alt** (72 px), 2 lines.
   - Subline "We shape proteins around what your research needs." 562 × 30 [M]; sans, muted color [S].
-- `Ellipse 1` glow x 720, y 198, 346 × 344 [M].
-- `nanodsf_curve_axes 2` (chart) is **hidden** in Figma [M] → not built.
+- Glow: see Glows.
+- `nanodsf_curve_axes 2` (chart) is hidden in Figma [M] → **not used** [D].
 - **Image `hero_img_VEGF_v04`** is a page-level layer (not inside Hero): x 296, y −82, 1193 × 1193 [M] (page coordinates). It reaches behind the Nav and to the right edge of the frame. File: `hero_img_VEGF_v04.png`.
 
 ### 3. Our services (149:216)
+- Background `neutral-900` [D].
 - Heading x 597, y 54, 246 × 45 [M].
 - `Cards` frame x 100, y 143, 1240 × 272 [M]: 3× `Service Card` 392 × 270 at x 0 / 424 / 848 [M] → **gap 32 px**.
 - Card titles [S] (serif, ~Heading 3 Alt): "Protein & Enzyme Engineering", "In Silico Feasibility Analysis", "Confidential Contract Research". Body: Paragraph-size text.
 - Card look [S]: translucent/glassy, light border, a colored (pink/violet) glow inside. Exact fills unknown.
 
 ### 4. Our portfolio (149:213)
+- Background Gradient 2 [D].
 - Heading x 578, y 42, 284 × 45 [M].
-- `Card with Tabs` instance x 102, y 154, 1235 × 723 [M]. The metadata does not show its insides (instance).
-- From the screenshot [S]:
-  - 3 **tab pills** centered above the card: "VEGF-Pro" (active, filled), "TGF-β3-Pro", "PDGF-BB-Pro".
-  - Card (glassy, gradient border, pink/violet glows): left column = "Recombinant VEGF-Pro" (Heading 1-ish, sans), description, "Chain length" + value, "Typical dissolution buffer" + value; right = **vial image**.
-  - → The 3 vials are one per tab: `vial_VEGF.png`, `vial_TGF.png`, `vial_PDGF.png`. **Tabs = interactive client component** (content of TGF/PDGF tabs not visible in Figma).
-- Vial position/size inside the card: unknown [M not available]; ≈ right side, ~25 % of card width [S].
+- `Card with Tabs` instance x 102, y 154, 1235 × 723 [M]. Insides not in metadata (instance).
+- Layout [S]: 3 **tab pills** centered above the card ("VEGF-Pro" active/filled, "TGF-β3-Pro", "PDGF-BB-Pro"); card (glassy, gradient border, pink/violet glows) with text on the left and the vial on the right.
+- **Tabs switch on click → client component** [D]. Each tab has its own vial [D].
+- **Vial: 470 × 470 px in Figma** [D]. In code responsive: `aspect-square`, max 470 px, `sizes` based on width [D].
+
+**Tab content [D]:**
+
+| Tab | Title | Description | Chain length | Typical dissolution buffer | Vial |
+| --- | ----- | ----------- | ------------ | -------------------------- | ---- |
+| VEGF-Pro | Recombinant VEGF-Pro | Engineered VEGF with improved thermostability and enhanced expression in E. coli. Designed for cell culture, angiogenesis assays and tissue engineering applications that call for consistent, long-lasting bioactivity. | 165 amino acids per monomer (~19 kDa, homodimer ~38 kDa) | PBS, pH 7.4 | `vial_VEGF.png` |
+| TGF-β3-Pro | Recombinant TGF-β3-Pro | Stabilised TGF-β3 variant optimised for high-yield expression in E. coli. Suited to studies of scarless wound healing, chondrogenic differentiation and stem cell research, where reliable and reproducible activity matters. | 112 amino acids per monomer (~12.5 kDa, homodimer ~25 kDa) | 4 mM HCl | `vial_TGF.png` |
+| PDGF-BB-Pro | Recombinant PDGF-BB-Pro | Computationally improved PDGF with enhanced stability and expression yield. Ideal for wound-healing research, cell proliferation assays and regenerative matrices. | 109 amino acids per monomer (~12 kDa, homodimer ~24 kDa) | 10 mM acetic acid | `vial_PDGF.png` |
+
+("E. coli" should be set in italics if the design does so; check at build time.)
 
 ### 5. About us (149:210)
+- Background Gradient 1 [D].
 - Heading "WHO ARE WE?" x 597, y 42, 247 × 45 [M].
 - Paragraph x 597, y 162, 397 × 230 [M] (left-aligned with the heading, sits over the molecule's top-right area [S]).
-- `Ellipse 1` glow x 526, y 316, 442 × 412 [M].
+- Glow: see Glows.
 - **Image `aboutus_img_TGFb3`** x 135, y 55, 1044 × 1044 [M] → overflows the section bottom (994) by 105 px into How we work. File: `TGFb3.png`.
 
 ### 6. How we work (149:202)
+- Background Gradient 2 [D].
 - Heading x 488, y 42, 464 × 45 [M].
 - **5 Workflow Cards**, each 380 × 289 [M]. In reading order (top → bottom), titles [S]:
 
@@ -110,36 +132,39 @@ Glows: `Ellipse 1` in Hero (x 720, y 198, 346 × 344) [M] and `Ellipse 1` in Abo
   - Zig-zag layout needs two columns ≥ ~1035 px wide → proposal: connector and zig-zag from **`lg` (1024 px)**, stacked cards without the line below that.
 
 ### 7. CTA (160:200)
+- Background Gradient 1 [D].
 - **Image `cta_img_PDGF`** x 0, y 48, 1042 × 586 [M] (left, bleeds to the left edge). File: `PDGF.png` (16:9 matches 1042 × 586).
 - `Frame 3` x 912, y 324, 344 × 143 [M]:
   - "Want to work with us?" 344 × 42 [M]; serif [S] → Heading 2 Alt (32 px).
   - `Button` instance x 103.6, y 77, 136.8 × 66 [M] (incl. possible shadow/padding); label "Contact", outlined pill [S].
+  - **Button does nothing for now, only a hover effect** [D]. No hover in Figma → propose a subtle hover and show it to the designer while building the section.
 
 ### 8. Footer (165:243)
-- `Frame 2` x 83, y 210, 1213 × 68 [M]:
-  - `Logo_footer` (mark only) 68 × 68 [M], color `primary-500` (decided).
+- Background `neutral-900` [D].
+- `Frame 2` x 83, y 210, 1213 × 68 [M]; alignment x 83 kept, not in the container [D]:
+  - `Logo_footer` (mark only) 68 × 68 [M], color `primary-500` [D].
   - Email "contact@cyterobio.com" x 82, y 18, 252 × 31 [M].
-  - `ri:linkedin-fill` icon (Remix Icon) x 1165, y 10, 48 × 48 [M], right-aligned. **No SVG in `_assets/`**.
+  - `ri:linkedin-fill` icon (Remix Icon) x 1165, y 10, 48 × 48 [M], right-aligned. **Use the Remix Icon path inline** [D]. Profile URL not known yet → `href="#"` with a `TODO` comment [D]. **Remind the designer about the URL.**
 - Top of the footer (y 0–210) is mostly occupied by Divider2 [M + S].
 
 ## Image placement summary
 
-| Figma layer | File in `_assets/` | Section | Position / size [M] |
-| ----------- | ------------------ | ------- | ------------------- |
-| hero_img_VEGF_v04 | hero_img_VEGF_v04.png | Hero (page-level layer) | page x 296, y −82, 1193 × 1193 |
-| (inside Card with Tabs) | vial_VEGF / vial_TGF / vial_PDGF.png | Portfolio, one per tab | unknown; right side of the card [S] |
-| aboutus_img_TGFb3 | TGFb3.png | About us | x 135, y 55, 1044 × 1044 |
-| cta_img_PDGF | PDGF.png | CTA | x 0, y 48, 1042 × 586 |
-| Logo | logo.svg | Nav | x 54, y 40, 265 × 78 |
-| Logo_footer | logo-footer.svg | Footer | 68 × 68 |
+| Figma layer | File in `_assets/` | Section | Position / size |
+| ----------- | ------------------ | ------- | --------------- |
+| hero_img_VEGF_v04 | hero_img_VEGF_v04.png | Hero (page-level layer) | page x 296, y −82, 1193 × 1193 [M] |
+| (inside Card with Tabs) | vial_VEGF / vial_TGF / vial_PDGF.png | Portfolio, one per tab | 470 × 470 [D], right side of the card [S] |
+| aboutus_img_TGFb3 | TGFb3.png | About us | x 135, y 55, 1044 × 1044 [M] |
+| cta_img_PDGF | PDGF.png | CTA | x 0, y 48, 1042 × 586 [M] |
+| Logo | logo.svg | Nav | x 54, y 40, 265 × 78 [M] |
+| Logo_footer | logo-footer.svg | Footer | 68 × 68 [M] |
 
 ## Open questions
 
-1. Exact backgrounds per section (screenshot is not reliable).
-2. Portfolio tabs: content for the TGF-β3-Pro and PDGF-BB-Pro tabs (text), and confirmation that tabs are interactive (click switches the card).
-3. Vial size/position inside the portfolio card and card internals (instance not expanded in metadata).
-4. Glow ellipses: color and blur.
-5. LinkedIn icon: SVG asset (or allowed to use the Remix Icon path inline) and profile URL.
-6. "Contact" button target (probably `mailto:contact@cyterobio.com`).
-7. Hidden nanoDSF chart in Hero: confirm it's not used.
-8. Nav logo (x 54) and footer row (x 83) are outside the 1240 content width; align to container or keep?
+1. ~~Exact backgrounds per section~~ → **Resolved** [D], see Backgrounds.
+2. ~~Portfolio tabs content and interactivity~~ → **Resolved** [D]: click-to-switch client component, texts in the tab content table.
+3. ~~Vial size/position~~ → **Resolved** [D]: 470 × 470, responsive `aspect-square`, max 470 px. Exact position inside the card still from the screenshot [S] (right side).
+4. ~~Glow color and blur~~ → **Resolved** [D]: primary-500, layer blur 190 → CSS ~`blur(95px)`, verify visually; smaller on mobile.
+5. ~~LinkedIn icon~~ → **Resolved** [D]: inline Remix Icon path. **Still open: profile URL** (`href="#"` + TODO until supplied).
+6. ~~Contact button target~~ → **Resolved** [D]: no action for now, subtle hover only (to be proposed and shown).
+7. ~~Hidden nanoDSF chart~~ → **Resolved** [D]: not used.
+8. ~~Nav / footer alignment~~ → **Resolved** [D]: keep Figma alignment (x 54 / x 83), not in the container.
